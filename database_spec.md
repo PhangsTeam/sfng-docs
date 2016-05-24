@@ -21,10 +21,19 @@ The data storage will be a single hierarchical file store.  Only certain file ty
     ./tables/
     ./uncalibrated/
 
-The primary portion of the tree is the `./data/` directory structure, which will contain a series of subdirectories.  The major quantum of storage is the 
+The primary portion of the tree is the `./data/` directory structure, which will contain a series of subdirectories.  The major quantum of storage is a directory containing data files corresponding to a single, unified observational data set.
 
-There is a single coarse organizational scheme to keep all 
+There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable traversal.  Some species are called out based on their utility in this research.  The 
 
+    ./data/CO/
+    ./data/HI/
+    ./data/Ha/
+    ./data/FIR/
+    ./data/NIR/
+    ./data/UV/
+    ./data/Optical/
+    ./data/Radio/
+    
 #### Naming Conventions 
 
 Individual files will be stored with their names given as the NED Preferred name for the object as the leading value.  This can be established directly by query NED by hand, using `astroquery` in python 
@@ -48,4 +57,4 @@ Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and
 4. Specified resolution using `BMAJ`, `BMIN` and `BPA`
 5. For spectral line data, the rest frequency in units specified by `RESTFRQ` 
 
-
+These files represent sky quantities and have *not* been processed for specific scientific outcomes (e.g., diffuse 24 micron emission correction).
