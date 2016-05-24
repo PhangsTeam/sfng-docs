@@ -1,3 +1,3 @@
-# Data Specifications for the Star Formation in Nearby Galaxies Collaboration
+### Data Specifications for the Star Formation in Nearby Galaxies Collaboration
 
 Words!
