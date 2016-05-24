@@ -38,8 +38,24 @@ Some tracers, in particular are called out based on their particular utility for
     ./data/CO/
     ./data/HI/
     ./data/Ha/
-    
-#### Naming Conventions 
+
+#### Membership in `./data/`
+
+Each subdirectory in the `./data/` tree represents a unified observational campaign of one or more galaxies.  A directory can contain multiple tracers such as the different spectral windows in an ALMA map or mutiple optical bands.
+
+##### Minimum file specifications for `./data/`
+
+Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and datacubes.  These should be science ready and carry with them a minimum of metadata to make them useful in the subsequent analysis.  Files will be included in the `./data/` tree if they fulfill all of the following specifications. 
+
+1. FITS files strongly preferred.
+2. Minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy
+3. Specified units using the `BUNIT` keyword
+4. Specified resolution using `BMAJ`, `BMIN` and `BPA`
+5. For spectral line data, the rest frequency in units specified by `RESTFRQ` 
+
+These files represent sky quantities and have *not* been processed for specific scientific outcomes (e.g., diffuse 24 micron emission correction).
+
+##### Naming Conventions 
 
 Individual files should represent individual galaxies or continouous maps of groups (e.g., NGC 5194/5195).  Each file will be stored with their names given as the NED Preferred name for the object as the leading value.  Spaces are replaced with underscores: `_`.  This can be established directly by query NED by hand, using `astroquery` in python 
 
@@ -52,14 +68,3 @@ Or the direct URL search, which returns parsable XML
     
 The preferred name is the first `TD` entry in the returned XML.
 
-#### Minimum file specifications for `./data/`
-
-Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and datacubes.  These should be science ready and carry with them a minimum of metadata to make them useful in the subsequent analysis.  Files will be included in the `./data/` tree if they fulfill all of the following specifications. 
-
-1. FITS files strongly preferred.
-2. Minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy
-3. Specified units using the `BUNIT` keyword
-4. Specified resolution using `BMAJ`, `BMIN` and `BPA`
-5. For spectral line data, the rest frequency in units specified by `RESTFRQ` 
-
-These files represent sky quantities and have *not* been processed for specific scientific outcomes (e.g., diffuse 24 micron emission correction).
