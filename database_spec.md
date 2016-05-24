@@ -11,7 +11,8 @@ This document outlines our data specification for the SFNG collaboration.  The d
 
 #### Structure
 
-The data storage will be a single hierarchical file store.  Only certain file types should be stored in the directory tree. 
+The data storage will be a single hierarchical file store.  Only certain file types should be stored in the directory tree.
+
     ./
     ./data_catalog.fits
     ./data/
