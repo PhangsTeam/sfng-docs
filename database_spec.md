@@ -35,7 +35,7 @@ Or the direct URL search, which returns parsable XML
 
     http://ned.ipac.caltech.edu/cgi-bin/nph-objsearch?%20extend=no&of=xml_main&objname=NGC+598
     
-The referred name is the first `TD` entry.
+The preferred name is the first `TD` entry in the returned XML.
 
 #### Minimum file specifications for `./data/`
 
