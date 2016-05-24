@@ -6,8 +6,9 @@ This document outlines our data specification for the SFNG collaboration.  The d
 
 1. Provide a single-point repository for science-ready data products to the collaboration.
 2. Establish a stable data structure that can be algorthmically traversed to build up derived products.
+3. The store should be flexible enough to include both telescope products and downstream analysis outputs (e.g., SFR maps)
+4. The storage should be human-navigable and use naming conventions that are easy to interpret.
 3. Provide a method for release of data to the general community.
-3. 
 
 #### Structure
 
@@ -23,20 +24,24 @@ The data storage will be a single hierarchical file store.  Only certain file ty
 
 The primary portion of the tree is the `./data/` directory structure, which will contain a series of subdirectories.  The major quantum of storage is a directory containing data files corresponding to a single, unified observational data set.
 
-There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable traversal.  Some species are called out based on their utility in this research.  The 
+There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable rapid traversal to specific types of data.
+
+    ./data/FIR/
+    ./data/NIR/
+    ./data/Optical/
+    ./data/Radio/
+    ./data/Submm/
+    ./data/UV/
+    
+Some tracers, in particular are called out based on their particular utility for this line of work.
 
     ./data/CO/
     ./data/HI/
     ./data/Ha/
-    ./data/FIR/
-    ./data/NIR/
-    ./data/UV/
-    ./data/Optical/
-    ./data/Radio/
     
 #### Naming Conventions 
 
-Individual files will be stored with their names given as the NED Preferred name for the object as the leading value.  This can be established directly by query NED by hand, using `astroquery` in python 
+Individual files should represent individual galaxies or continouous maps of groups (e.g., NGC 5194/5195).  Each file will be stored with their names given as the NED Preferred name for the object as the leading value.  Spaces are replaced with underscores: `_`.  This can be established directly by query NED by hand, using `astroquery` in python 
 
    from astroquery.ned import Ned
    (Ned.query_object('NGC 598'))['Object Name'].data.data[0]
