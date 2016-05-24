@@ -41,4 +41,10 @@ The referred name is the first `TD` entry.
 
 Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and datacubes.  These should be science ready and carry with them a minimum of metadata to make them useful in the subsequent analysis.  Files will be included in the `./data/` tree if they fulfill all of the following specifications. 
 
-1. Minimum valid WCS compliance that is readable 
+1. FITS files strongly preferred.
+2. Minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy
+3. Specified units using the `BUNIT` keyword
+4. Specified resolution using `BMAJ`, `BMIN` and `BPA`
+5. For spectral line data, the rest frequency in units specified by `RESTFRQ` 
+
+
