@@ -18,7 +18,6 @@ Here are a few use cases that the database structure should be able to solve.
 
 The data storage will be a single hierarchical file store.  Only certain file types should be stored in the directory tree.
 
-    ./
     ./SFNG-INDEX.fits
     ./data/
     ./derived/
@@ -30,7 +29,7 @@ The data storage will be a single hierarchical file store.  Only certain file ty
 The intent of the directories is as follows:
 
 * `./data/` -- Directories containing data files corresponding to a single, unified observational data set.  Contents are calibrated images in sky brightness units (e.g., `K`, `MJY/SR`, `JY/PIX`, `W/M**2`)
-* `./derived/` -- Derived science products from the data in `./data/`.  Examples would be star formation rates, gas surface density maps.
+* `./derived/` -- Derived science products from the data in `./data/`.  Examples would be star formation rates, gas surface density maps, moment maps.
 * `./docs/` -- Annoying documents like this one. 
 * `./release/` -- Bundles of files for particular community releases.
 * `./tables/` -- Tabular data including catalogs, line-of-sight sample databases.
@@ -38,7 +37,7 @@ The intent of the directories is as follows:
 
 The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metatdata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).
 
-There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable rapid traversal to specific types of data.
+_Optional_:There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable rapid traversal to specific types of data.
 
     ./data/FIR/
     ./data/NIR/
@@ -79,7 +78,7 @@ These files represent sky quantities and have *not* been processed for specific 
 
 ##### Naming Conventions 
 
-Individual files should represent individual galaxies or continouous maps of groups (e.g., NGC 5194/5195).  Each file will be stored with their names given as the NED Preferred name for the object as the leading value.  Spaces are replaced with underscores: `_` and separated from the remainder of the file name by a `.`.  Consider the FITS data from the THINGS survey [`NGC_4826_NA_CUBE_THINGS.FITS`](http://www.mpia.de/THINGS/Data_files/NGC_4826_NA_CUBE_THINGS.FITS) should be stored as `MESSIER_064.NGC_4826_NA_CUBE_THINGS.FITS`.  Cleaving to this naming convention will help us traverse our data both by waveband and by galaxy.
+Individual files should represent individual galaxies or continouous maps of groups (e.g., NGC 5194/5195).  Each file will be stored with their names given as the NED Preferred name for the object as the leading value.  Spaces are replaced with underscores: `_` and separated from the remainder of the file name by a `.`.  Consider the FITS data from the THINGS survey [`NGC_4826_NA_CUBE_THINGS.FITS`](http://www.mpia.de/THINGS/Data_files/NGC_4826_NA_CUBE_THINGS.FITS) should be stored as `MESSIER_064.NGC_4826_NA_CUBE_THINGS.FITS`.  Cleaving to this naming convention will help us traverse our data both by waveband and by galaxy.  It would also be easy to create `./data/bygalaxy/` which contains a series of galaxy names and each galaxy directory contains links to the data in the by-survey tree.
 
 The NED canonical name can be established directly by query NED by hand, using `astroquery` in python 
 
@@ -119,6 +118,6 @@ There are the opportunities to add other keywords here.
 
 Since summary products of the data and understanding the quality of the data in each file requires understand the noise level, it would be ideal to add keyword information to the headers that captures the uncertainty in each file.  This would probably mean making up a FITS keyword (`REPUNC` for representative uncertainty), or adding a `HISTORY` card. Alternatively, this could be described in keyword-value basis in the README file.
 
-#### Derived data products
+#### `./derived/` data products
 
 The `derived` hierarchy should contain the information that can be deduced from the sky brightness images in the `data` subject to physical models or data processing.  Considering spectral line data cubes, the data cube would be in `data` and the (masked) moment maps would sit in `derived`.  Data in `derived` have the same minimum FITS standards as in the `data` directory but likely would have a larger fraction of the information specified in their respective `README` files.
