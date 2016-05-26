@@ -10,7 +10,9 @@
 
 Here are a few use cases that the database structure should be able to solve.
 
-* You want to find all CO(1-0) maps
+* You want to find all CO(1-0) maps with resolution better than 15 arcseconds for galaxies within 15 Mpc, but only if they have a depth of 1 K rms in a 1 km/s channel.
+* You want to find all galaxies with both a CO(1-0) map, MIPS 24 micron, but no Halpha map for a proposal.
+* You want to download all the data on IC 342.
 
 #### Structure
 
@@ -34,7 +36,7 @@ The intent of the directories is as follows:
 * `./tables/` -- Tabular data including catalogs, line-of-sight sample databases.
 * `./uncalibrated/` -- Here there be dragons.
 
-The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure.
+The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metatdata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).
 
 There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable rapid traversal to specific types of data.
 
@@ -108,7 +110,11 @@ Each directory in the `./data/` hierarchy will have a `SurveyName_README.txt` fi
     The HI Nearby Galaxy survey data by Walter et al. (2008), AJ, 136, 2563.  VLA survey of nearby galaxies in 21-cm line emission.
     URL: http://www.mpia.de/THINGS/Data.html
     
-There are the opportunities to add other keywords here.
+There are the opportunities to add other keywords here.  
+
+* Species / transition / type: `MAPTYPE = CO(1-0)` or `MAPTYPE = CONTINUUM`
+* Representative uncertainties: `REPUNC = 1.5e-1`
+* PSF descriptions for convolution: `PSFTYPE = SPIRE250` or `PSFTYPE = GAUSSIAN`
 
 ##### Uncertainty information (suggestion)
 
@@ -116,4 +122,4 @@ Since summary products of the data and understanding the quality of the data in 
 
 #### Derived data products
 
-The `derived` hierarchy should contain the information that can be deduced from the sky brightness images in the `data` subject to physical models or data processing.  Considering spectral line data cubes, the data cube would be in `data` and the (masked) moment maps would sit in `derived`.  Data in `derived` have the same minimum FITS standards as in the `data` directory, but likely would have much more information specified in their respective `README` files.
+The `derived` hierarchy should contain the information that can be deduced from the sky brightness images in the `data` subject to physical models or data processing.  Considering spectral line data cubes, the data cube would be in `data` and the (masked) moment maps would sit in `derived`.  Data in `derived` have the same minimum FITS standards as in the `data` directory but likely would have a larger fraction of the information specified in their respective `README` files.
