@@ -39,19 +39,21 @@ Some tracers, in particular are called out based on their particular utility for
     ./data/HI/
     ./data/Ha/
 
-#### Membership in `./data/`
+#### Granularity of `./data/` directories.
 
-Each subdirectory in the `./data/` tree represents a unified observational campaign of one or more galaxies.  A directory can contain multiple tracers such as the different spectral windows in an ALMA map or mutiple optical bands.
+Each subdirectory in the `./data/` tree represents a unified observational campaign of one or more galaxies.  A directory can contain multiple tracers such as the different spectral windows in an ALMA map or mutiple optical bands.  Examples of current data that would get their own directory: HERACLES, KINGFISH, THINGS, PAWS.  Data from different tracers in the same waveband (e.g., all the SPIRE data from KINGFISH) should be included in the same directory.
 
 ##### Minimum file specifications for `./data/`
 
 Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and datacubes.  These should be science ready and carry with them a minimum of metadata to make them useful in the subsequent analysis.  Files will be included in the `./data/` tree if they fulfill all of the following specifications. 
 
-1. FITS files strongly preferred.
-2. Minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy
-3. Specified units using the `BUNIT` keyword
-4. Specified resolution using `BMAJ`, `BMIN` and `BPA`
-5. For spectral line data, the rest frequency in units specified by `RESTFRQ` 
+1. Data should be calibrated to the common standard of closest to sky units as possible without requiring assumptions (e.g., source beam coupling).
+2. FITS files are strongly preferred.
+3. For images and data cubes, minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy.  Of note, Stokes axes should be handled carefully and not result in singular WCS matrices (I'm looking at you, PdBI).
+4. Specified units using the `BUNIT` keyword.  Preference for MKS units as per FITS standard.
+5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  Standard is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.
+6. For spectral line data, the rest frequency in units specified by `RESTFRQ` in units of Hz.
+7. Individual spectra should be grouped by galaxies and stored as FITS BINTABLES.  
 
 These files represent sky quantities and have *not* been processed for specific scientific outcomes (e.g., diffuse 24 micron emission correction).
 
@@ -66,5 +68,8 @@ Or the direct URL search, which returns parsable XML
 
     http://ned.ipac.caltech.edu/cgi-bin/nph-objsearch?%20extend=no&of=xml_main&objname=NGC+598
     
-The preferred name is the first `TD` entry in the returned XML.
+The preferred name is the first `TD` entry in the returned XML.  Multiple objects in the same file could be handled by soft links.
 
+_Alternatively, we can just re-edit all the fits files to include the NED canonical name in the `OBJECT` keyword._
+
+Consider the FITS data from the THINGS survey [`NGC_3077_NA_CUBE_THINGS.FITS`](http://www.mpia.de/THINGS/Data_files/NGC_3077_NA_CUBE_THINGS.FITS)
