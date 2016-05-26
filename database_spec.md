@@ -1,14 +1,12 @@
 ### Data Store Specifications for the Star Formation in Nearby Galaxies Collaboration
 
-This document outlines our data specification for the SFNG collaboration.  The data store fulfills several goals.
-
 #### Objectives
 
-1. Provide a single-point repository for science-ready data products to the collaboration.
-2. Establish a stable data structure that can be algorthmically traversed to build up derived products.
+1. Provide a single-point repository that serves science-ready data products to the collaboration.
+2. Establish a stable data structure that can be algorthmically traversed to build up indices of file and their associated metadata.
 3. The store should be flexible enough to include both telescope products and downstream analysis outputs (e.g., SFR maps)
 4. The storage should be human-navigable and use naming conventions that are easy to interpret.
-3. Provide a method for release of data to the general community.
+3. The method should provide a method for release of data to the general community.
 
 #### Structure
 
@@ -19,6 +17,7 @@ The data storage will be a single hierarchical file store.  Only certain file ty
     ./data/
     ./derived/
     ./docs/
+    ./release/
     ./tables/
     ./uncalibrated/
 
@@ -27,6 +26,7 @@ The intent of the directories is as follows:
 * `./data/` -- Directories containing data files corresponding to a single, unified observational data set.  Contents are calibrated images in sky brightness units (e.g., `K`, `MJY/SR`, `JY/PIX`, `W/M**2`)
 * `./derived/` -- Derived science products from the data in `./data/`.  Examples would be star formation rates, gas surface density maps.
 * `./docs/` -- Annoying documents like this one. 
+* `./release/` -- Bundles of files for particular community releases.
 * `./tables/` -- Tabular data including catalogs, line-of-sight sample databases.
 * `./uncalibrated/` -- Here there be dragons.
 
@@ -58,10 +58,12 @@ Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and
 1. Data should be calibrated to the common standard of closest to sky units as possible without requiring assumptions (e.g., source beam coupling).
 2. FITS files are strongly preferred.
 3. For images and data cubes, minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy.  Of note, Stokes axes should be handled carefully and not result in singular WCS matrices (I'm looking at you, PdBI).
-4. Specified units using the `BUNIT` keyword.  Preference for MKS units as per FITS standard.
-5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  Standard is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.
+4. Specified units using the `BUNIT` keyword. 
+5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  Standard is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.  
 6. For spectral line data, the rest frequency in units specified by `RESTFRQ` in units of Hz.
 7. Individual spectra should be grouped by galaxies and stored as FITS BINTABLES.  
+
+Missing keywords that describe the data, especially `BUNIT`, `BMAJ`, `BMIN`, `BPA` which are common for radio data but less so for optical, can be specified at the beginning of the README file for all files in the directory.
 
 These files represent sky quantities and have *not* been processed for specific scientific outcomes (e.g., diffuse 24 micron emission correction).
 
@@ -84,10 +86,24 @@ The preferred name is the first `TD` entry in the returned XML.  Multiple object
 
 _Alternatively, we can just re-edit all the fits files to include the NED canonical name in the `OBJECT` keyword._
 
-##### Uncertainty information
-
-Since summary products of the data and understanding the quality of the data in each file requires understand the noise level, it would be ideal to add keyword information to the headers that captures the uncertainty in each file.  
-
 ##### Survey metadata information
 
-Each directory in the `./data/` hierarchy will have a `SurveyName_README.txt` (e.g., `THINGS_README.txt` where `THINGS` is also the directory name.) file, which briefly explains where the data are from (URL!), what they represent, plus caveats and warnings if necessary.
+Each directory in the `./data/` hierarchy will have a `SurveyName_README.txt` file (e.g., `THINGS_README.txt` where `THINGS` is also the directory name), which briefly explains where the data are from (URLs are great), what they represent, plus caveats and warnings as necessary.  If certain metadata are missing from the FITS files but appropriate for all files in the directory, they should be specified at the beginning of the README file and separated from the rest of the file by a single line containing three hyphens. Each line needs to be parsable as the structure `KEYWORD = VALUE` where the `KEYWORD` is the FITS keyword, the `VALUE` is read as a string and the separator is ` = `.  String `VALUES` representing numbers should cast to their appropriate types in IDL and Python.  Metadata specified in the README will be superseded by metadata in the actual files.  For example, `THINGS_README.txt` might have the structure:
+
+    BUNIT = K
+    BMAJ = 4.1667e-3
+    BMIN = 4.1667e-3
+    BPA = 0.0
+    ---
+    The HI Nearby Galaxy survey data by Walter et al. (2008), AJ, 136, 2563.  VLA survey of nearby galaxies in 21-cm line emission.
+    URL: http://www.mpia.de/THINGS/Data.html
+    
+    
+    
+##### Uncertainty information (suggestion)
+
+Since summary products of the data and understanding the quality of the data in each file requires understand the noise level, it would be ideal to add keyword information to the headers that captures the uncertainty in each file.  This would probably mean making up a FITS keyword (`REPUNC` for representative uncertainty), or adding a `HISTORY` card. Alternatively, this could be described in keyword-value basis in the README file.
+
+#### Derived data products
+
+The `./derived/` hierarchy should contain the information that can be deduced from the sky brightness images in the `./data/` subject to physical models or data processing.  Considering spectral line data cubes, the data cube would be in `./data/` and the (masked) moment maps would sit in `./derived/`.  Data in derived have the same minimum FITS standards as in the `./data/` directory.  
