@@ -71,8 +71,10 @@ Individual files should represent individual galaxies or continouous maps of gro
 
 The NED canonical name can be established directly by query NED by hand, using `astroquery` in python 
 
+```
    from astroquery.ned import Ned
    (Ned.query_object('NGC 598'))['Object Name'].data.data[0]
+```
 
 Or the direct URL search, which returns parsable XML
 
