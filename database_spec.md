@@ -1,4 +1,4 @@
-### Data Store Specifications for the Star Formation in Nearby Galaxies Collaboration
+### *DRAFT* Data Store Specifications for the Star Formation in Nearby Galaxies Collaboration
 
 #### Objectives
 
@@ -50,7 +50,6 @@ There is a single coarse organizational scheme to facilitate human navigation co
 Some tracers, in particular are called out based on their particular utility for this line of work.
 
     ./data/CO/
-    ./data/HI/
     ./data/Ha/
 
 #### The `./data/` directories.
