@@ -71,7 +71,7 @@ _Desiderata_
 5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  Standard is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.  
 6. For spectral line data, the rest frequency in units specified by `RESTFRQ` in units of Hz.
 7. For spectral line data, the spectral resolution in units of the spectral axis using keyword `SPECRES`
-8. Individual spectra should be grouped by galaxies and stored as FITS BINTABLES.  
+8. Individual spectra should be grouped by galaxy and stored as FITS BINTABLEs.  
 9. Units for the axes using `CUNITn` keywords.  This is quite rare in FITS files.
 
 Missing keywords that describe the data, especially `BUNIT`, `BMAJ`, `BMIN`, `BPA`, `SPECRES`,`CUNITn` which are common for radio data but less so for optical, can be specified at the beginning of the README file for all files in the directory.
