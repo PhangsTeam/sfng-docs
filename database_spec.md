@@ -6,7 +6,11 @@
 2. Establish a stable data structure that can be algorthmically traversed to build up indices of file and their associated metadata.
 3. The store should be flexible enough to include both telescope products and downstream analysis outputs (e.g., SFR maps)
 4. The storage should be human-navigable and use naming conventions that are easy to interpret.
-3. The method should provide a method for release of data to the general community.
+5. The method should provide a method for release of data to the general community.
+
+Here are a few use cases that the database structure should be able to solve.
+
+* You want to find all CO(1-0) maps
 
 #### Structure
 
@@ -58,12 +62,17 @@ Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and
 1. Data should be calibrated to the common standard of closest to sky units as possible without requiring assumptions (e.g., source beam coupling).
 2. FITS files are strongly preferred.
 3. For images and data cubes, minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy.  Of note, Stokes axes should be handled carefully and not result in singular WCS matrices (I'm looking at you, PdBI).
+
+_Desiderata_
+
 4. Specified units using the `BUNIT` keyword. 
 5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  Standard is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.  
 6. For spectral line data, the rest frequency in units specified by `RESTFRQ` in units of Hz.
-7. Individual spectra should be grouped by galaxies and stored as FITS BINTABLES.  
+7. For spectral line data, the spectral resolution in units of the spectral axis using keyword `SPECRES`
+8. Individual spectra should be grouped by galaxies and stored as FITS BINTABLES.  
+9. Units for the axes using `CUNITn` keywords.  This is quite rare in FITS files.
 
-Missing keywords that describe the data, especially `BUNIT`, `BMAJ`, `BMIN`, `BPA` which are common for radio data but less so for optical, can be specified at the beginning of the README file for all files in the directory.
+Missing keywords that describe the data, especially `BUNIT`, `BMAJ`, `BMIN`, `BPA`, `SPECRES`,`CUNITn` which are common for radio data but less so for optical, can be specified at the beginning of the README file for all files in the directory.
 
 These files represent sky quantities and have *not* been processed for specific scientific outcomes (e.g., diffuse 24 micron emission correction).
 
@@ -94,16 +103,17 @@ Each directory in the `./data/` hierarchy will have a `SurveyName_README.txt` fi
     BMAJ = 4.1667e-3
     BMIN = 4.1667e-3
     BPA = 0.0
+    CUNIT3 = Hz
     ---
     The HI Nearby Galaxy survey data by Walter et al. (2008), AJ, 136, 2563.  VLA survey of nearby galaxies in 21-cm line emission.
     URL: http://www.mpia.de/THINGS/Data.html
     
-    
-    
+There are the opportunities to add other keywords here.
+
 ##### Uncertainty information (suggestion)
 
 Since summary products of the data and understanding the quality of the data in each file requires understand the noise level, it would be ideal to add keyword information to the headers that captures the uncertainty in each file.  This would probably mean making up a FITS keyword (`REPUNC` for representative uncertainty), or adding a `HISTORY` card. Alternatively, this could be described in keyword-value basis in the README file.
 
 #### Derived data products
 
-The `./derived/` hierarchy should contain the information that can be deduced from the sky brightness images in the `./data/` subject to physical models or data processing.  Considering spectral line data cubes, the data cube would be in `./data/` and the (masked) moment maps would sit in `./derived/`.  Data in derived have the same minimum FITS standards as in the `./data/` directory.  
+The `derived` hierarchy should contain the information that can be deduced from the sky brightness images in the `data` subject to physical models or data processing.  Considering spectral line data cubes, the data cube would be in `data` and the (masked) moment maps would sit in `derived`.  Data in `derived` have the same minimum FITS standards as in the `data` directory, but likely would have much more information specified in their respective `README` files.
