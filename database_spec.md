@@ -19,6 +19,7 @@ Here are a few use cases that the database structure should be able to solve.
 The data storage will be a single hierarchical file store.  Only certain file types should be stored in the directory tree.
 
     ./SFNG-INDEX.fits
+    ./code/
     ./data/
     ./derived/
     ./docs/
@@ -28,6 +29,7 @@ The data storage will be a single hierarchical file store.  Only certain file ty
 
 The intent of the directories is as follows:
 
+* `./code/` -- Code directories containting the github repositories such as [pysfng](https://github.com/sfng/pysfng) or [sfngidl](https://github.com/sfng/sfngidl).
 * `./data/` -- Directories containing data files corresponding to a single, unified observational data set.  Contents are calibrated images in sky brightness units (e.g., `K`, `MJY/SR`, `JY/PIX`, `W/M**2`)
 * `./derived/` -- Derived science products from the data in `./data/`.  Examples would be star formation rates, gas surface density maps, moment maps.
 * `./docs/` -- Annoying documents like this one. 
