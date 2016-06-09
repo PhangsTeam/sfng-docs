@@ -37,21 +37,7 @@ The intent of the directories is as follows:
 * `./tables/` -- Tabular data including catalogs, line-of-sight sample databases.
 * `./uncalibrated/` -- Here there be dragons.
 
-The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metatdata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).
-
-_Optional_:There is a single coarse organizational scheme to facilitate human navigation consisting of one layer of subdirectories that will enable rapid traversal to specific types of data.
-
-    ./data/FIR/
-    ./data/NIR/
-    ./data/Optical/
-    ./data/Radio/
-    ./data/Submm/
-    ./data/UV/
-    
-Some tracers, in particular are called out based on their particular utility for this line of work.
-
-    ./data/CO/
-    ./data/Ha/
+The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metadata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).
 
 #### The `./data/` directories.
 
