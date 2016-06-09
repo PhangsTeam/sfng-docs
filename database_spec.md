@@ -37,7 +37,7 @@ The intent of the directories is as follows:
 * `./tables/` -- Tabular data including catalogs, line-of-sight sample databases.
 * `./uncalibrated/` -- Here there be dragons.
 
-The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metadata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).
+The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metadata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).  The `SFNG-INDEX.fits` file will be versioned both by the date it is generated (reflecting the contents of the repository) and the version of the generation code.  This will allow for (hopefully back-compatible) changes to the database structure.
 
 #### The `./data/` directories.
 
