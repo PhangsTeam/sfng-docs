@@ -23,6 +23,7 @@ The data storage will be a single hierarchical file store.  Only certain file ty
     ./data/
     ./derived/
     ./docs/
+    ./ingest/
     ./release/
     ./tables/
     ./uncalibrated/
@@ -33,15 +34,17 @@ The intent of the directories is as follows:
 * `./data/` -- Directories containing data files corresponding to a single, unified observational data set.  Contents are calibrated images in sky brightness units (e.g., `K`, `MJY/SR`, `JY/PIX`, `W/M**2`)
 * `./derived/` -- Derived science products from the data in `./data/`.  Examples would be star formation rates, gas surface density maps, moment maps.
 * `./docs/` -- Annoying documents like this one. 
+* `./ingest/` -- Data uploaded but awaiting ingest into the database are stored here.
 * `./release/` -- Bundles of files for particular community releases.
 * `./tables/` -- Tabular data including catalogs, line-of-sight sample databases.
 * `./uncalibrated/` -- Here there be dragons.
+* `./visibilities/` -- Calibrated visibilities.
 
-The `SFNG-INDEX.fits` is a procedurally generated FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metadata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).  The `SFNG-INDEX.fits` file will be versioned both by the date it is generated (reflecting the contents of the repository) and the version of the generation code.  This will allow for (hopefully back-compatible) changes to the database structure.
+The `SFNG-INDEX.fits` is a _procedurally generated_ FITS BINTABLE index of the `./data/` and `./derived/` trees.  Downloading this file should allow queries of what files are available in the whole structure, meeting the use cases described above.  The file will contain brief metadata for files (e.g., `CDELTn`, `CTYPEn` keywords, bounding polygons in RA/Dec, depth and resolution).  The `SFNG-INDEX.fits` file will be versioned both by the date it is generated (reflecting the contents of the repository) and the version of the generation code used.  This will allow for (hopefully back-compatible) changes to the database structure.
 
 #### The `./data/` directories.
 
-Each subdirectory in the `./data/` tree represents a unified observational campaign of one or more galaxies.  A directory can contain multiple tracers such as the different spectral windows in an ALMA map or mutiple optical bands.  Examples of current data that would get their own directory: HERACLES, KINGFISH, THINGS, PAWS.  Data from different tracers in the same waveband (e.g., all the SPIRE data from KINGFISH) should be included in the same directory.
+Each subdirectory in the `./data/` tree represents a unified observational campaign of one or more galaxies.  A directory can contain multiple tracers such as the different spectral windows in an ALMA map or mutiple optical bands.  Examples of current data that would get their own directory: HERACLES, KINGFISH, THINGS, PAWS.  Data from different tracers in the same waveband (e.g., all the SPIRE data from KINGFISH) should be included in the same directory.  There are no clear rules for the best groupings within this directory, but we should be guided by the idea that users will frequently want to extract subsets of the database via `scp/rsync` and storing in groupings of data that facilitate this will be beneficial.
 
 ##### Minimum file specifications for `./data/`
 
@@ -49,15 +52,15 @@ Data stored in the `./data/` tree are fully calibrated spectroscopy, images, and
 
 1. Data should be calibrated to the common standard of closest to sky units as possible without requiring assumptions (e.g., source beam coupling).
 2. FITS files are strongly preferred.
-3. For images and data cubes, minimum valid WCS compliance that is readable in IDL via Astronomy library and in Python via astropy.  Of note, Stokes axes should be handled carefully and not result in singular WCS matrices (I'm looking at you, PdBI).
+3. For images and data cubes, minimum valid WCS compliance that is readable in _both_ IDL via Astronomy library and in Python via astropy.  Of note, Stokes axes should be handled carefully and not result in singular WCS matrices.
 
 _Desiderata_
 
 4. Specified units using the `BUNIT` keyword. 
-5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  Standard is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.  
+5. Specified resolution using `BMAJ`, `BMIN` and `BPA`.  The standard usage is to have `BMIN` and `BMAX` are in decimal degrees and `BPA` is in degrees east of north.  
 6. For spectral line data, the rest frequency in units specified by `RESTFRQ` in units of Hz.
 7. For spectral line data, the spectral resolution in units of the spectral axis using keyword `SPECRES`
-8. Individual spectra should be grouped by galaxy and stored as FITS BINTABLEs.  
+8. Individual spectra should be grouped ideally by galaxy or by survey and stored as FITS BINTABLEs.  A full spectroscopic campaign.  Such BINTABLE should include the galaxy name as one of the keys in the database.
 9. Units for the axes using `CUNITn` keywords.  This is quite rare in FITS files.
 
 Missing keywords that describe the data, especially `BUNIT`, `BMAJ`, `BMIN`, `BPA`, `SPECRES`,`CUNITn` which are common for radio data but less so for optical, can be specified at the beginning of the README file for all files in the directory.
@@ -75,23 +78,22 @@ The NED canonical name can be established directly by query NED by hand, using `
    (Ned.query_object('NGC 598'))['Object Name'].data.data[0]
 ```
 
-Or the direct URL search, which returns parsable XML
-
-    http://ned.ipac.caltech.edu/cgi-bin/nph-objsearch?%20extend=no&of=xml_main&objname=NGC+598
+The IDL astrolib routine `querysimbad.pro` should also provide the correct canonical name.  Finally, a direct URL search, which returns parsable XML will work:
+ [http://ned.ipac.caltech.edu/cgi-bin/nph-objsearch?%20extend=no&of=xml_main&objname=NGC+598](http://ned.ipac.caltech.edu/cgi-bin/nph-objsearch?%20extend=no&of=xml_main&objname=NGC+598)
     
 The preferred name is the first `TD` entry in the returned XML.  Multiple objects in the same file could be handled by soft links.
 
-_Alternatively, we can just re-edit all the fits files to include the NED canonical name in the `OBJECT` keyword._
-
 ##### Survey metadata information
 
-Each directory in the `./data/` hierarchy will have a `SurveyName_README.txt` file (e.g., `THINGS_README.txt` where `THINGS` is also the directory name), which briefly explains where the data are from (URLs are great), what they represent, plus caveats and warnings as necessary.  If certain metadata are missing from the FITS files but appropriate for all files in the directory, they should be specified at the beginning of the README file and separated from the rest of the file by a single line containing three hyphens. Each line needs to be parsable as the structure `KEYWORD = VALUE` where the `KEYWORD` is the FITS keyword, the `VALUE` is read as a string and the separator is ` = `.  String `VALUES` representing numbers should cast to their appropriate types in IDL and Python.  Metadata specified in the README will be superseded by metadata in the actual files.  For example, `THINGS_README.txt` might have the structure:
+Each directory in the `./data/` and `./derived/` hierarchy will have a `SurveyName_README.txt` file (e.g., `THINGS_README.txt` where `THINGS` is also the directory name), which briefly explains where the data are from (URLs are great), what they represent, plus caveats and warnings as necessary.  If certain metadata are missing from the FITS files but applicable for all files in the directory, they should be specified at the beginning of the README file and separated from the rest of the file by a single line containing three hyphens (`---`). Each line needs to be parseable as the structure `KEYWORD = VALUE` where the `KEYWORD` is the FITS (style) keyword, the `VALUE` is read as a string and the separator is ` = `.  String `VALUES` representing numbers should cast to their appropriate types in IDL and Python.  Metadata specified in the README will be superseded by metadata in the actual files.  For example, `THINGS_README.txt` might have the structure:
 
     BUNIT = K
     BMAJ = 4.1667e-3
     BMIN = 4.1667e-3
     BPA = 0.0
     CUNIT3 = Hz
+    VERSION = 20160601
+    CURRENT = True 
     ---
     The HI Nearby Galaxy survey data by Walter et al. (2008), AJ, 136, 2563.  VLA survey of nearby galaxies in 21-cm line emission.
     URL: http://www.mpia.de/THINGS/Data.html
@@ -102,9 +104,20 @@ There are the opportunities to add other keywords here.
 * Representative uncertainties: `REPUNC = 1.5e-1`
 * PSF descriptions for convolution: `PSFTYPE = SPIRE250` or `PSFTYPE = GAUSSIAN`
 
+Description of FITS file extensions should be given.
+
+##### Versioning of the data
+
+Initially, we will maintain a simple versioning of the data and derived products.  The most up-to-date version of a survey or files will simply have the survey name.  Products that have been superseded will have the directory name appended with the `VERSION` date.
+
+The `VERSION` and `CURRENT` keywords in the `README` file are *mandatory* and should be the date of generation for the data product.  If no version date is given, it will be supplied as the date of ingest into the database.  The `CURRENT` keyword is a boolean flag that indicates whether a given dataset is the most up-to-date product and this will be inserted into the index file.
+
+
 ##### Uncertainty information (suggestion)
 
 Since summary products of the data and understanding the quality of the data in each file requires understand the noise level, it would be ideal to add keyword information to the headers that captures the uncertainty in each file.  This would probably mean making up a FITS keyword (`REPUNC` for representative uncertainty), or adding a `HISTORY` card. Alternatively, this could be described in keyword-value basis in the README file.
+
+Uncertainty maps should be specified by including `_error` in the file name, preferably immediately before the `.fits`.
 
 #### `./derived/` data products
 
